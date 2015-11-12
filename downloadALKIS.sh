@@ -6,9 +6,9 @@ Folder='/home/esteban/workspace/PostgreSQL/DownloadsTemp/'
 mkdir -p $Folder
 
 Base='http://daten-hamburg.de/geographie_geologie_geobasisdaten/ALKIS_Liegenschaftskarte/ALKIS_Liegenschaftskarte_ausgewaehlteDaten_'
+DataFiles=("HH_2015-10-03.zip") #"HH_2015-08-03.zip" #"HH_2015-04-04.zip" "HH_2015-01-03.zip" "HH_2014-11-19.zip" "HH_2014-06-14.zip" 
 
-for var in "HH_2015-08-03.zip" #"HH_2015-04-04.zip" "HH_2015-01-03.zip" "HH_2014-11-19.zip" "HH_2014-06-14.zip" 
-do
+for var in "${DataFiles[@]}"; do
     if [ -f  $Folder$var ]; then
         echo "File on disk " $var
     else
@@ -18,8 +18,7 @@ do
 done
 
 echo "unzip files"
-for var in "HH_2015-08-03.zip" #"HH_2015-04-04.zip" "HH_2015-01-03.zip" #"HH_2014-11-19.zip" "HH_2014-06-14.zip" 
-do
+for var in "${DataFiles[@]}"; do
     if [ -f $Folder${var%.*} ]; then
         echo "Unziped files at " $Folder${var%.*}
     else
@@ -29,14 +28,9 @@ do
 done
 
 echo "populate postgreSQL"
-# using EPSG:5555
-# http://www.epsg-registry.org/export.htm?gml=urn:ogc:def:crs:EPSG::5555
-
-for var in "HH_2015-08-03.zip" #"HH_2015-04-04.zip" "HH_2015-01-03.zip" "HH_2014-11-19.zip" "HH_2014-06-14.zip" 
-do
+for var in "${DataFiles[@]}"; do
     for file in $Folder${var%.*}/*.xml
     do
-        #ogr2ogr -update -append -skipfailures -progress -f "PostgreSQL" -a_srs "EPSG:5555" PG:"dbname=alkis2015 user=esteban password=esteban" $file
         if [ -f $Folder${var%.*} ]; then
             echo "shapefile exists"
         else
